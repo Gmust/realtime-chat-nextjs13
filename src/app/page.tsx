@@ -1,8 +1,13 @@
+const Home = async () => {
 
-export default function Home() {
+
   return (
-   <div className='text-2xl text-gray-900'>
-     main
-   </div>
-  )
-}
+    <div className='text-2xl text-gray-900'>
+      main
+      
+    </div>
+  );
+};
+
+
+export default Home;

@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { Button } from '@/components/shared/Button';
 
 
 const Dashboard = async () => {
@@ -9,6 +10,7 @@ const Dashboard = async () => {
   return (
     <div>
 
+      <Button>Hello</Button>
     </div>
   );
 };

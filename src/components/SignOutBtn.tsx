@@ -19,7 +19,6 @@ export const SignOutBtn = ({ ...props }: SignOutBtnProps) => {
     setIsSigningOut(true);
     try {
       await signOut();
-      router.push('/login');
     } catch (e) {
       toast.error('There was a problem signing out!');
     } finally {

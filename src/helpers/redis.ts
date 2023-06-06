@@ -17,6 +17,6 @@ export const fetchRedis = async (command: Commands, ...args: (string | number)[]
     throw new Error(`Error executing Redis command: ${response.statusText} `);
   }
 
-  const data = (await response.json()) as { result: string | null };
+  const data = (await response.json());
   return data.result;
 };

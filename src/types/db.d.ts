@@ -6,10 +6,10 @@ interface User {
 }
 
 interface Message {
-  id: string,
-  senderId: string,
-  receiverId: string,
-  text: string,
+  id: string
+  senderId: string
+  receiverId: string
+  text: string
   timestamp: number
 }
 

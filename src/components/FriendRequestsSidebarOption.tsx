@@ -35,7 +35,7 @@ export const FriendRequestsSidebarOption = ({ initialUnseenRequestCount, session
       );
       pusherClient.unbind('incoming_friend_requests', friendRequestHandler);
     };
-  }, []);
+  }, [router, sessionId]);
 
   return (
     <Link href='/dashboard/requests'

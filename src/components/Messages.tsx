@@ -29,7 +29,7 @@ export const Messages = ({ initialMessages, sessionId, sessionImg, chatPartnerIm
     );
 
     const messageHandler = (message: Message) => {
-      setMessages((prev) => [message, ...prev]);
+      setMessages((prev) => [...prev, message]);
     };
 
     pusherClient.bind('incoming-message', messageHandler);
@@ -45,16 +45,16 @@ export const Messages = ({ initialMessages, sessionId, sessionImg, chatPartnerIm
 
   return (
     <div id='messages'
-         className='flex h-full flex-1 flex-col-reverse hap-4 p-3 overflow-y-auto scrollbar-thumb-blue
-                    scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
+         className='flex h-full flex-1 flex-col-reverse gap-4 p-3 overflow-y-auto scrollbar-thumb-blue scrollbar-thumb-rounded
+                    scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
       <div ref={scrollDownRef}>
-        {messages.reverse().map((message, index) => {
+        {messages.map((message, index) => {
           const isCurrentUser = message.senderId === sessionId;
           const hasNextMessageFromSameUser = messages[index - 1]?.senderId === messages[index].senderId;
 
           return (
             <div className='chat-message' key={`${message.id}-${message.timestamp}`}>
-              <div className={cn('flex items-center m-2', {
+              <div className={cn('flex items-end m-2', {
                 'justify-end': isCurrentUser
               })}>
                 <div className={cn('flex flex-col space-y-4 text-base max-w-xs mx-2', {

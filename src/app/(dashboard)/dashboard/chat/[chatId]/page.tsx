@@ -50,7 +50,8 @@ const page = async ({ params }: ChatPageProps) => {
   const chatPartnerId = user.id === userId1 ? userId2 : userId1;
   const chatPartner = (await db.get(`user:${chatPartnerId}`)) as User;
   const initialMessages = await getChatMessages(chatId);
-  console.log(initialMessages);
+  initialMessages.reverse();
+
   return (
     <div className='flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]'>
       <div className='flex sm:items-center justify-between py-3 border-b-2 border-gray-200'>
@@ -73,8 +74,8 @@ const page = async ({ params }: ChatPageProps) => {
       <Messages
         //@ts-ignore
         initialMessages={initialMessages} sessionId={session.user.id}
-        chatPartnerImg={chatPartner.image} sessionImg={session.user.image!}  chatId={chatId}/>
-      <ChatInput chatPartner={chatPartner} chatId={chatId}  />
+        chatPartnerImg={chatPartner.image} sessionImg={session.user.image!} chatId={chatId} />
+      <ChatInput chatPartner={chatPartner} chatId={chatId} />
     </div>
   );
 };

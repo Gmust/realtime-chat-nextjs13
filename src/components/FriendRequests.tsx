@@ -49,7 +49,7 @@ export const FriendRequests = ({ incomingFriendRequests, sessionId }: FriendRequ
       );
       pusherClient.unbind('incoming_friend_requests', friendRequestHandler);
     };
-  }, []);
+  }, [sessionId]);
 
   return (
     <>

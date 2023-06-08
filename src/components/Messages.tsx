@@ -1,32 +1,63 @@
 'use client';
-import { useRef, useState } from 'react';
-import { cn } from '@/lib/Utils';
+import { useEffect, useRef, useState } from 'react';
+import { format } from 'date-fns';
+import { cn, toPusherKey } from '@/lib/Utils';
+import Image from 'next/image';
+import { pusherClient } from '@/lib/pusher';
+import { useRouter } from 'next/navigation';
 
-interface Messages {
+interface MessagesProps {
   initialMessages: Message[],
-  sessionId: string
+  sessionId: string,
+  sessionImg: string,
+  chatPartnerImg: string,
+  chatId: string
 }
 
-export const Messages = ({ initialMessages, sessionId }: Messages) => {
+export const Messages = ({ initialMessages, sessionId, sessionImg, chatPartnerImg, chatId }: MessagesProps) => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const scrollDownRef = useRef<HTMLDivElement | null>(null);
+  const router = useRouter();
+
+  const formatTimestamp = (timestamp: number | Date) => {
+    return format(timestamp, 'HH:mm');
+  };
+
+  useEffect(() => {
+    pusherClient.subscribe(
+      toPusherKey(`chat:${chatId}`)
+    );
+
+    const messageHandler = (message: Message) => {
+      setMessages((prev) => [message, ...prev]);
+    };
+
+    pusherClient.bind('incoming-message', messageHandler);
+
+    return () => {
+      pusherClient.unsubscribe(
+        toPusherKey(`chat:${chatId}`)
+      );
+      pusherClient.unbind('incoming-message', messageHandler);
+    };
+  }, [chatId]);
+
 
   return (
     <div id='messages'
          className='flex h-full flex-1 flex-col-reverse hap-4 p-3 overflow-y-auto scrollbar-thumb-blue
                     scrollbar-thumb-rounded scrollbar-track-blue-lighter scrollbar-w-2 scrolling-touch'>
       <div ref={scrollDownRef}>
-        {initialMessages.map((message, index) => {
-          console.log('message',message)
+        {messages.reverse().map((message, index) => {
           const isCurrentUser = message.senderId === sessionId;
           const hasNextMessageFromSameUser = messages[index - 1]?.senderId === messages[index].senderId;
 
           return (
             <div className='chat-message' key={`${message.id}-${message.timestamp}`}>
-              <div className={cn('flex items-center', {
+              <div className={cn('flex items-center m-2', {
                 'justify-end': isCurrentUser
               })}>
-                <div className={cn('flex flex-col space-y-2 text-base max-w-xs mx-2', {
+                <div className={cn('flex flex-col space-y-4 text-base max-w-xs mx-2', {
                   'order-1 items-end': isCurrentUser,
                   'order-2 items-start': !isCurrentUser
                 })}>
@@ -40,9 +71,18 @@ export const Messages = ({ initialMessages, sessionId }: Messages) => {
                   })}>
                     {message.text}{' '}
                     <span className='ml-2 text-xs text-gray-400'>
-                      {message.timestamp}
+                      {formatTimestamp(message.timestamp)}
                     </span>
                   </span>
+                </div>
+                <div className={cn('relative w-8 h-8', {
+                  'order-2': isCurrentUser,
+                  'order-1': !isCurrentUser,
+                  'invisible': hasNextMessageFromSameUser
+                })}>
+                  <Image src={isCurrentUser ? (sessionImg as string) : (chatPartnerImg as string)}
+                         alt={isCurrentUser ? 'User image' : 'Chat partner image'} fill referrerPolicy='no-referrer'
+                         className='rounded-full' />
                 </div>
               </div>
             </div>

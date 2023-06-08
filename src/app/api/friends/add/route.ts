@@ -4,6 +4,8 @@ import { addFriendValidator } from '@/lib/validations/add-friend';
 import { authOptions } from '@/lib/auth';
 import { fetchRedis } from '@/helpers/redis';
 import { db } from '@/lib/db';
+import { pusherServer } from '@/lib/pusher';
+import { toPusherKey } from '@/lib/Utils';
 
 export async function POST(req: Request) {
   try {
@@ -48,6 +50,16 @@ export async function POST(req: Request) {
       return new Response('This user is your friend.', { status: 400 });
     }
 
+    await pusherServer.trigger(
+      toPusherKey(`user:${idToAdd}:incoming_friend_requests`),
+      'incoming_friend_requests',
+      {
+        senderId: session.user.id,
+        senderEmail: session.user.email,
+        senderImage: session.user.image
+      }
+    );
+
     await db.sadd(`user:${idToAdd}:incoming_friend_requests`, session.user.id);
 
     return new Response('OK');
@@ -56,6 +68,6 @@ export async function POST(req: Request) {
       return new Response('Invalid request payload.', { status: 422 });
     }
 
-    return new Response('Invalid request', { status: 400   });
+    return new Response('Invalid request', { status: 400 });
   }
 }

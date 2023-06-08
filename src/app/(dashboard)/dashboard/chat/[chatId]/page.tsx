@@ -71,9 +71,10 @@ const page = async ({ params }: ChatPageProps) => {
       </div>
 
       <Messages
-        // @ts-ignore
-        initialMessages={initialMessages} sessionId={session.user.id} />
-      <ChatInput chatPartner={chatPartner} chatId={chatId} />
+        //@ts-ignore
+        initialMessages={initialMessages} sessionId={session.user.id}
+        chatPartnerImg={chatPartner.image} sessionImg={session.user.image!}  chatId={chatId}/>
+      <ChatInput chatPartner={chatPartner} chatId={chatId}  />
     </div>
   );
 };

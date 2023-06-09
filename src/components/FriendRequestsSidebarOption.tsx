@@ -21,18 +21,23 @@ export const FriendRequestsSidebarOption = ({ initialUnseenRequestCount, session
     pusherClient.subscribe(
       toPusherKey(`user:${sessionId}:incoming_friend_requests`)
     );
+    pusherClient.subscribe(toPusherKey(`user:${sessionId}:friends`));
 
     const friendRequestHandler = () => {
       setUnseenRequestsCount((prev) => prev + 1);
-      router.refresh();
+    };
+
+    const addedFriendHandler = () => {
+      setUnseenRequestsCount((prev) => prev - 1);
     };
 
     pusherClient.bind('incoming_friend_requests', friendRequestHandler);
+    pusherClient.bind('new_friend', addedFriendHandler);
 
     return () => {
-      pusherClient.unsubscribe(
-        toPusherKey(`user:${sessionId}:incoming_friend_requests`)
-      );
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:incoming_friend_requests`));
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionId}:friends`));
+      pusherClient.unbind('new_friend', addedFriendHandler);
       pusherClient.unbind('incoming_friend_requests', friendRequestHandler);
     };
   }, [router, sessionId]);
@@ -48,7 +53,7 @@ export const FriendRequestsSidebarOption = ({ initialUnseenRequestCount, session
       <p className='truncate'>Friend requests</p>
       {unseenRequestsCount > 0 ?
         <div className='rounded-full w-5 h-5 text-xs flex justify-center items-center text-white bg-violet-700'>
-          {initialUnseenRequestCount}
+          {unseenRequestsCount}
         </div>
         : null
       }

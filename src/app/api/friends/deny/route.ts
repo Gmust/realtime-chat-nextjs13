@@ -2,6 +2,8 @@ import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { pusherServer } from '@/lib/pusher';
+import { toPusherKey } from '@/lib/Utils';
 
 export async function POST(req: Request) {
   try {
@@ -14,12 +16,13 @@ export async function POST(req: Request) {
     }
 
     const { id: idToDeny } = z.object({ id: z.string() }).parse(body);
+
     await db.srem(`user:${session.user.id}:incoming_friend_requests`, idToDeny);
 
     return new Response('OK');
 
   } catch (e) {
-    console.error(e)
+    console.error(e);
     if (e instanceof z.ZodError) {
       return new Response('Invalid request payload', { status: 422 });
     }

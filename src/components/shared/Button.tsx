@@ -3,12 +3,12 @@ import { ButtonHTMLAttributes } from 'react';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/Utils';
 
-const buttonVariants = cva(
+export const buttonVariants = cva(
   'active:scale-95 inline-flex justify-center items-center rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none',
   {
     variants: {
       variant: {
-        default: 'bg-violet-500 text-white hover:bg-violet-700',
+        default: 'bg-violet-700 text-white hover:bg-violet-900 ',
         ghost: 'bg-transparent hover: text-slate-900 hover:bg-slate-200'
       },
       size: {

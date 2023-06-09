@@ -9,12 +9,13 @@ import { fetchRedis } from '@/helpers/redis';
 import { authOptions } from '@/lib/auth';
 import { getFriendsByUserId } from '@/helpers/get-friends-by-user-id';
 import { SidebarChatList } from '@/components/SidebarChatList';
+import { MobileChatLayout } from '@/components/MobileChatLayout';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
-interface SidebarOption {
+export interface SidebarOption {
   id: number,
   name: string,
   href: string
@@ -51,8 +52,12 @@ const Layout = async ({ children }: LayoutProps) => {
 
   return (
     <div className='w-full h-screen flex'>
-      <div
-        className='flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6'>
+      <div className='md:hidden'>
+        <MobileChatLayout session={session} friends={friends} sidebarOptions={sidebarOptions}
+                          unseenRequestCount={unseenRequestCount} />
+      </div>
+      <div className='hidden md:flex h-full w-full max-w-xs grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200
+                      bg-white px-6 '>
         <Link href='/dashboard' className='flex h-16 shrink-0 items-center'>
           <Icons.Twitter className='h-10 w-auto text-violet-600' />
         </Link>
@@ -64,7 +69,7 @@ const Layout = async ({ children }: LayoutProps) => {
         <nav className='flex flex-1 flex-col'>
           <ul role='link' className='flex flex-1 flex-col gap-y-7'>
             <li>
-              <SidebarChatList friends={friends} sessionId={session.user.id}/>
+              <SidebarChatList friends={friends} sessionId={session.user.id} />
             </li>
             <li>
               <div className='text-base font-semibold leading-6 text-gray-400'>

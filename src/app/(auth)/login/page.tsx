@@ -30,11 +30,11 @@ const Page = () => {
               Sign in to your account
             </h2>
           </div>
-          <Button isLoading={isLoading} type='button' className='max-w-sm mx-auto w-full text-xl space-x-2'
+          <Button isLoading={isLoading} type='button' className='max-w-sm mx-auto w-full text-2xl space-x-2'
                   onClick={loginWithGoogle}>
             {
               isLoading ? null :
-                <Image src={'GoogleLogo.svg'} alt={'google logo'} width={20} height={20} />
+                <Image src={'GoogleLogo.svg'} alt={'google logo'}  width={20} height={20} />
             }
             <span>Google</span>
           </Button>

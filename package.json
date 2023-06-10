@@ -26,7 +26,7 @@
     "eslint-config-next": "13.4.4",
     "lucide-react": "^0.233.0",
     "nanoid": "^4.0.2",
-    "next": "^13.4.5-canary.6",
+    "next": "^13.4.2",
     "next-auth": "^4.22.1",
     "postcss": "8.4.24",
     "pusher": "^5.1.3",

@@ -29,7 +29,7 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt'
   },
   pages: {
-    signIn: '/login'
+    signIn: '/login',
   },
   providers: [
     GoogleProvider({
@@ -38,9 +38,7 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
-// @ts-ignore
     async jwt({ token, user }) {
-      try {
         const dbUseResult = await fetchRedis('get', `user:${token.id}`) as string;
 
         if (!dbUseResult) {
@@ -56,13 +54,8 @@ export const authOptions: NextAuthOptions = {
           email: dbUser.email,
           picture: dbUser.image
         };
-      }catch (e){
-        console.log(e)
-      }
     },
-// @ts-ignore
     async session({ session, token }) {
-      try {
         if (token) {
           session.user.id = token.id
           session.user.name = token.name
@@ -71,9 +64,6 @@ export const authOptions: NextAuthOptions = {
         }
 
         return session
-      }catch (e){
-        console.log(e)
-      }
     },
     redirect() {
       return '/dashboard';

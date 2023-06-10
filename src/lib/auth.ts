@@ -38,32 +38,42 @@ export const authOptions: NextAuthOptions = {
     })
   ],
   callbacks: {
+// @ts-ignore
     async jwt({ token, user }) {
-      const dbUseResult = await fetchRedis('get', `user:${token.id}`) as string;
+      try {
+        const dbUseResult = await fetchRedis('get', `user:${token.id}`) as string;
 
-      if (!dbUseResult) {
-        token.id = user!.id;
-        return token;
+        if (!dbUseResult) {
+          token.id = user!.id;
+          return token;
+        }
+
+        const dbUser = JSON.parse(dbUseResult) as User;
+
+        return {
+          id: dbUser.id,
+          name: dbUser.name,
+          email: dbUser.email,
+          picture: dbUser.image
+        };
+      }catch (e){
+        console.log(e)
       }
-
-      const dbUser = JSON.parse(dbUseResult) as User;
-
-      return {
-        id: dbUser.id,
-        name: dbUser.name,
-        email: dbUser.email,
-        picture: dbUser.image
-      };
     },
+// @ts-ignore
     async session({ session, token }) {
+      try {
+        if (token) {
+          session.user.id = token.id
+          session.user.name = token.name
+          session.user.email = token.email
+          session.user.image = token.picture
+        }
 
-      if (token) {
-        session.user.id = token.id;
-        session.user.name = token.name;
-        session.user.email = token.email;
-        session.user.image = token.picture;
+        return session
+      }catch (e){
+        console.log(e)
       }
-      return session;
     },
     redirect() {
       return '/dashboard';
